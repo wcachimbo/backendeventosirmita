@@ -26,6 +26,7 @@ public class PedidoServiceImpl implements com.backend.eventos.irmita.service.Ped
             SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
             Date dataFormateada = format.parse(pedido.getFecha());
             return true;
+
         }
 
     }
