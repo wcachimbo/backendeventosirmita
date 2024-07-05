@@ -22,6 +22,7 @@ public class PedidoServiceImpl implements com.backend.eventos.irmita.service.Ped
             return false;
         } else if (pedido.getDireccionCliente().isEmpty()) {
             return false;
+
         } else {
             SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
             Date dataFormateada = format.parse(pedido.getFecha());
