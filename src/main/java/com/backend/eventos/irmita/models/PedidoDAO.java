@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Entity
 @Table(name="pedido")
@@ -33,7 +35,11 @@ public class PedidoDAO {
     @NotEmpty(message = "La dirección  no puede ser vacio")
     private String direccionCliente;
 
-
     @Column(name  = "descripcion", nullable = true, length = 200, columnDefinition = "VARCHAR(200)")
     private String descripcion;
+
+    @Column(name  = "estadop", nullable = false, length = 10, columnDefinition = "VARCHAR(10)")
+    private String estadoP;
+
+    private List ProductosDAO;
 }
