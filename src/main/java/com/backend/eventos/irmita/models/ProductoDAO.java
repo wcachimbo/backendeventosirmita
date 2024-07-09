@@ -27,6 +27,10 @@ public class ProductoDAO {
     @Min(value = 1, message = "El precio debe ser mayor a cero")
     private double precio;
 
+    @Column(name  = "totalproducto", nullable = false)
+    private double totalProducto;
+
+
     @Temporal(TemporalType.DATE)
     @Column(name  = "fechapedido", nullable = false, columnDefinition = "DATE")
     private String fechapedido;

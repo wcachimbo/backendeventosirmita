@@ -36,7 +36,7 @@ public class PedidoDAO {
     private String fecha;
 
     @Column(name  = "total", nullable = false)
-    @Min(value = 1, message = "El total debe ser mayor a cero")
+    @Min(value = 0, message = "El total debe ser mayor a cero")
     private double total;
 
     @Size(min=10, max = 10, message = "El tamaño debe tener 10 numeros")

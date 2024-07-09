@@ -26,8 +26,8 @@ public interface ProductoRepo extends CrudRepository<ProductoDAO, Long> {
     @Modifying
     @Transactional
     @Query(value = """
-    INSERT INTO producto (cantidad_prodcuto, factura_id, nombreproducto, precio, pedido_id, fechapedido)
-    VALUES (:cantidad_prodcuto, :facutra_pedido_id, :nombreproducto, :precio, :pedido_id, :fechapedido)
+    INSERT INTO producto (cantidad_prodcuto, factura_id, nombreproducto, precio, pedido_id, fechapedido, totalproducto)
+    VALUES (:cantidad_prodcuto, :facutra_pedido_id, :nombreproducto, :precio, :pedido_id, :fechapedido, :totalproducto)
     """, nativeQuery = true)
     int insertProducto(
             @Param("cantidad_prodcuto") int cantidad_prodcuto,
@@ -35,10 +35,10 @@ public interface ProductoRepo extends CrudRepository<ProductoDAO, Long> {
             @Param("nombreproducto") String nombreproducto,
             @Param("precio") double precio,
             @Param("pedido_id") int pedido_id,
-            @Param("fechapedido") LocalDate fechapedido);
+            @Param("fechapedido") LocalDate fechapedido,
+            @Param("totalproducto") double totalproducto);
 
-    @Modifying
-    @Transactional
+
     @Query(value = """
     SELECT COALESCE(SUM(cantidad_prodcuto),0) AS cantidad FROM producto
     WHERE nombreproducto = :nombreproducto

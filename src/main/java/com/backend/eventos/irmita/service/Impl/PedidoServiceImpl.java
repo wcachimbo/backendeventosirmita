@@ -35,16 +35,6 @@ public class PedidoServiceImpl implements PedidoService {
     @Transactional
     public boolean creaPedido(PedidoDAO pedido) {
 
-      //  if (pedido.getNombreCliente().isEmpty()) {
-      //      return false;
-      //  } else if (pedido.getFecha().isEmpty()) {
-      //      return false;
-      //  } else if (pedido.getCelularCliente().isEmpty()) {
-      //      return false;
-      //  } else if (pedido.getDireccionCliente().isEmpty()) {
-      //      return false;
-
-      //  } else {
             LocalDate localDate = LocalDate.parse(pedido.getFecha(), formatter);
             int idpedido = pedidoRepo.pedidoID() + 1;
             String idfactura = String.format("FAC-" + "%0" + 5 + "d", Integer.valueOf(idpedido));
@@ -53,11 +43,13 @@ public class PedidoServiceImpl implements PedidoService {
                 final String status = Estado.CREADO.getStatus();
                 final int result = pedidoRepo.insertPedido(pedido.getCelularCliente(),
                         pedido.getDescripcion(), pedido.getDireccionCliente(), status, idfactura,
-                        localDate, pedido.getNombreCliente());
+                        localDate, pedido.getNombreCliente(), pedido.getTotal());
                 if (result > 0) {
                     for (ProductoDAO product : pedido.getProductop()) {
                         productoRepo.insertProducto(product.getCantidadprodcuto(), idfactura,
-                                product.getNombreProducto(), product.getPrecio(), idpedido, localDate);
+                                product.getNombreProducto(), product.getPrecio(), idpedido, localDate,
+                                Double.valueOf(product.getCantidadprodcuto()* product.getPrecio())
+                        );
                         stockRepo.updateStock(product.getCantidadprodcuto(), product.getNombreProducto());
                     }
                     return true;

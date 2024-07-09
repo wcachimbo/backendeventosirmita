@@ -9,11 +9,8 @@ import org.springframework.data.repository.query.Param;
 
 public interface StockRepo extends CrudRepository<StockDAO, Long> {
 
-    @Modifying
-    @Transactional
     @Query(value = """
-    SELECT COALESCE(cantidadpd ,0) AS cantidadpd FROM stock
-    WHERE nombrepd = :nombrepd
+    SELECT COALESCE(cantidadpd ,0) AS cantidadpd FROM stock WHERE nombrepd = :nombrepd
     """, nativeQuery = true)
     Integer stockProduct(
             @Param("nombrepd") String nombrepd);
