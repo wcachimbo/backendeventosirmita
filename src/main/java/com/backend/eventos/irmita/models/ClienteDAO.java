@@ -13,9 +13,9 @@ public class ClienteDAO {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long cliente_id;
 
-    @Size(min=4, max = 20, message = "El tamaño tiene que estar entre 4 y12")
+    @Size(min=4, max = 20, message = "El tamaño tiene que estar entre 4 y 12")
     @Column(name  = "nombre", nullable = false, length = 20, columnDefinition = "VARCHAR(20)")
     @NotEmpty(message = "El nombre no puede ser vacio")
     private String nombre;

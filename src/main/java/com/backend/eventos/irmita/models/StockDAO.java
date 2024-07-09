@@ -10,7 +10,7 @@ public class StockDAO {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id_stock;
 
     @Column(name  = "nombrepd", nullable = false, length = 20, columnDefinition = "VARCHAR(20)")
     private String nombrePD;
