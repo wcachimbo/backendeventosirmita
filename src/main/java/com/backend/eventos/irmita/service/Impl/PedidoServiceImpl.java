@@ -3,6 +3,7 @@ package com.backend.eventos.irmita.service.Impl;
 import com.backend.eventos.irmita.commons.ENUM.Estado;
 import com.backend.eventos.irmita.models.PedidoDAO;
 import com.backend.eventos.irmita.models.ProductoDAO;
+import com.backend.eventos.irmita.repository.ClienteRepo;
 import com.backend.eventos.irmita.repository.PedidoRepo;
 import com.backend.eventos.irmita.repository.ProductoRepo;
 import com.backend.eventos.irmita.repository.StockRepo;
@@ -30,6 +31,9 @@ public class PedidoServiceImpl implements PedidoService {
     @Autowired
     StockRepo stockRepo;
 
+    @Autowired
+    ClienteRepo clienteRepo;
+
 
     @Override
     @Transactional
@@ -52,8 +56,12 @@ public class PedidoServiceImpl implements PedidoService {
                         );
                         stockRepo.updateStock(product.getCantidadprodcuto(), product.getNombreProducto());
                     }
-                    return true;
+
+                }if(clienteRepo.getClientes(pedido.getCelularCliente()).isEmpty()){
+                    clienteRepo.insertPedido(pedido.getCelularCliente(),pedido.getDireccionCliente(),pedido.getNombreCliente());
+
                 }
+                return true;
             }
 
         return false;

@@ -14,21 +14,18 @@ import java.util.List;
 @Repository("clineteRepo")
 public interface ClienteRepo extends CrudRepository<ClienteDAO, Long> {
 
-    @Query(value= "SELECT *FROM PEDIDO WHERE celular = :celular", nativeQuery = true)
+    @Query(value= "SELECT *FROM cliente WHERE celular = :celular", nativeQuery = true)
     List<ClienteDAO> getClientes(@Param("celular") String celular);
 
 
     @Modifying
     @Transactional
     @Query(value = """
-    INSERT INTO pedido (celularcliente, descripcion, direccioncliente, fecha, nombrecliente, estadop)
-    VALUES (:celular, :descripcion, :direccion, :fecha, :nombre, :status)
+    INSERT INTO cliente (celular, direccion, nombre)
+    VALUES (:celularC, :direccionC, :nombreC)
     """, nativeQuery = true)
     int insertPedido(
-            @Param("celular") String celular,
-            @Param("descripcion") String descripcion,
-            @Param("direccion") String direccion,
-            @Param("fecha") Date fecha,
-            @Param("nombre") String nombre,
-            @Param("status") String status);
+            @Param("celularC") String celularC,
+            @Param("direccionC") String direccionC,
+            @Param("nombre") String nombreC);
 }
