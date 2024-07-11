@@ -27,5 +27,5 @@ public interface ClienteRepo extends CrudRepository<ClienteDAO, Long> {
     int insertPedido(
             @Param("celularC") String celularC,
             @Param("direccionC") String direccionC,
-            @Param("nombre") String nombreC);
+            @Param("nombreC") String nombreC);
 }
