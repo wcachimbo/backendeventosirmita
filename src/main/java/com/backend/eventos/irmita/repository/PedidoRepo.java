@@ -11,15 +11,13 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 
 @Repository("pedidoRepo")
 public interface PedidoRepo extends CrudRepository<PedidoDAO, Long> {
 
     List<PedidoDAO> findAll();
-
-    @Query(value = "SELECT COALESCE(MAX(pedido_id), 0) AS ultimopedido FROM pedido" , nativeQuery = true)
-    int pedidoID();
 
     @Query(value = "SELECT *FROM pedido WHERE estadop = :status AND fecha = :fecha" , nativeQuery = true)
     List<PedidoDAO> pedidoActivo(@Param("status") String status,
@@ -28,10 +26,11 @@ public interface PedidoRepo extends CrudRepository<PedidoDAO, Long> {
     @Modifying
     @Transactional
     @Query(value = """
-        INSERT INTO pedido (celularcliente, descripcion, direccioncliente, estadop, factura, fecha, nombrecliente, total)
-        VALUES (:celular, :descripcion, :direccion, :status, :factura, :fecha, :nombre, :total)
+        INSERT INTO pedido (pedido_id, celularcliente, descripcion, direccioncliente, estadop, factura, fecha, nombrecliente, total)
+        VALUES (:pedido_id, :celular, :descripcion, :direccion, :status, :factura, :fecha, :nombre, :total)
     """, nativeQuery = true)
     int insertPedido(
+            @Param("pedido_id") UUID pedido_id,
             @Param("celular") String celular,
             @Param("descripcion") String descripcion,
             @Param("direccion") String direccion,

@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 
 @Repository("productoRepo")
@@ -26,15 +27,16 @@ public interface ProductoRepo extends CrudRepository<ProductoDAO, Long> {
     @Modifying
     @Transactional
     @Query(value = """
-    INSERT INTO producto (cantidad_prodcuto, factura_id, nombreproducto, precio, pedido_id, fechapedido, totalproducto)
-    VALUES (:cantidad_prodcuto, :facutra_pedido_id, :nombreproducto, :precio, :pedido_id, :fechapedido, :totalproducto)
+    INSERT INTO producto (producto_id, cantidad_prodcuto, factura_id, nombreproducto, precio, pedido_id, fechapedido, totalproducto)
+    VALUES (:producto_id, :cantidad_prodcuto, :facutra_pedido_id, :nombreproducto, :precio, :pedido_id, :fechapedido, :totalproducto)
     """, nativeQuery = true)
     int insertProducto(
+            @Param("producto_id") UUID producto_id,
             @Param("cantidad_prodcuto") int cantidad_prodcuto,
             @Param("facutra_pedido_id") String facutra_pedido_id,
             @Param("nombreproducto") String nombreproducto,
             @Param("precio") double precio,
-            @Param("pedido_id") int pedido_id,
+            @Param("pedido_id") UUID pedido_id,
             @Param("fechapedido") LocalDate fechapedido,
             @Param("totalproducto") double totalproducto);
 

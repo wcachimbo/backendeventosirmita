@@ -10,13 +10,15 @@ import com.backend.eventos.irmita.repository.StockRepo;
 import com.backend.eventos.irmita.service.PedidoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -34,31 +36,32 @@ public class PedidoServiceImpl implements PedidoService {
     @Autowired
     ClienteRepo clienteRepo;
 
+    private final UUID key= UUID.randomUUID();
+
 
     @Override
     @Transactional
     public boolean creaPedido(PedidoDAO pedido) {
 
             LocalDate localDate = LocalDate.parse(pedido.getFecha(), formatter);
-            int idpedido = pedidoRepo.pedidoID() + 1;
-            String idfactura = String.format("FAC-" + "%0" + 5 + "d", Integer.valueOf(idpedido));
+            String idfactura = "FAC-" + key;
 
             if (validatePedido(localDate, pedido.getProductop())) {
                 final String status = Estado.CREADO.getStatus();
-                final int result = pedidoRepo.insertPedido(pedido.getCelularCliente(),
+                final int result = pedidoRepo.insertPedido(key,pedido.getCelularCliente(),
                         pedido.getDescripcion(), pedido.getDireccionCliente(), status, idfactura,
                         localDate, pedido.getNombreCliente(), pedido.getTotal());
                 if (result > 0) {
                     for (ProductoDAO product : pedido.getProductop()) {
-                        productoRepo.insertProducto(product.getCantidadprodcuto(), idfactura,
-                                product.getNombreProducto(), product.getPrecio(), idpedido, localDate,
+                        productoRepo.insertProducto(key,product.getCantidadprodcuto(), idfactura,
+                                product.getNombreProducto(), product.getPrecio(), key, localDate,
                                 Double.valueOf(product.getCantidadprodcuto()* product.getPrecio())
                         );
                         stockRepo.updateStock(product.getCantidadprodcuto(), product.getNombreProducto());
                     }
 
-                }if(clienteRepo.getClientes(pedido.getCelularCliente()).isEmpty()){
-                    clienteRepo.insertPedido(pedido.getCelularCliente(),pedido.getDireccionCliente(),pedido.getNombreCliente());
+                }if (clienteRepo.getClientes(pedido.getCelularCliente()).isEmpty()){
+                    clienteRepo.insertClienteo(key, pedido.getCelularCliente(),pedido.getDireccionCliente(),pedido.getNombreCliente());
 
                 }
                 return true;
@@ -67,14 +70,17 @@ public class PedidoServiceImpl implements PedidoService {
         return false;
     }
 
-    private boolean validatePedido(LocalDate fecha, List<ProductoDAO> producto) {
+    private boolean validatePedido(LocalDate fecha, Set<ProductoDAO> producto) {
         try {
+            Map<String,Object> response = new HashMap<>();
             List<PedidoDAO> listpedido = pedidoRepo.pedidoActivo("001", fecha);
             if (!listpedido.isEmpty()) {
                 for (ProductoDAO product : producto) {
                     final int sumInventaro = stockRepo.stockProduct(product.getNombreProducto());
                     final int sumProduct = productoRepo.disponibilidadProducto(product.getNombreProducto(), fecha);
                     if (sumProduct > sumInventaro) {
+                        response.put(product.getNombreProducto()+" Solo hay disponible", sumInventaro);
+                         new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
                         return false;
                     }
                 }

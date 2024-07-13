@@ -4,16 +4,22 @@ import jakarta.persistence.*;
 
 import jakarta.validation.constraints.Min;
 import lombok.Data;
+import org.hibernate.annotations.GenericGenerator;
+
+import java.util.UUID;
 
 @Data
 @Entity
 @Table(name="producto")
 public class ProductoDAO {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long producto_id;
 
-    @Column(name  = "factura_id", nullable = false, length = 10, columnDefinition = "VARCHAR(10)")
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(updatable = false, nullable = false)
+    private UUID producto_id;
+
+    @Column(name  = "factura_id", nullable = false, length = 100, columnDefinition = "VARCHAR(100)")
     private String factura;
 
     @Column(name  = "nombreproducto", nullable = false, length = 20, columnDefinition = "VARCHAR(20)")
@@ -36,8 +42,7 @@ public class ProductoDAO {
     private String fechapedido;
 
     @ManyToOne
-    @JoinColumn(name="pedido_id")
+    @JoinColumn(name = "pedido_id", nullable = false)
     private PedidoDAO pedido;
-
 
 }

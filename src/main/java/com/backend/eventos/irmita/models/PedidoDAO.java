@@ -5,24 +5,25 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 @Data
 @Entity
 @Table(name="pedido")
 public class PedidoDAO {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long pedido_id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(updatable = false, nullable = false)
+    private UUID pedidoId;
 
-    @ElementCollection
-    @CollectionTable(
-            joinColumns = @JoinColumn(name = "pedido_id", referencedColumnName = "pedido_id"))
-    private List<ProductoDAO> productop = new ArrayList<>();
-
-    @Column(name  = "factura", nullable = false, length = 10, columnDefinition = "VARCHAR(10)")
+    @Column(name  = "factura", nullable = false, length = 100, columnDefinition = "VARCHAR(100)")
     private String factura;
 
     @Size(min=4, max = 20, message = "El tamaño tiene que estar entre 4 y12")
@@ -54,6 +55,9 @@ public class PedidoDAO {
 
     @Column(name  = "estadop", nullable = false, length = 3, columnDefinition = "VARCHAR(3)")
     private String estadoP;
+
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<ProductoDAO> productop;
 
 
 }

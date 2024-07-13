@@ -6,14 +6,15 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 @Entity
 @Table(name="cliente")
 public class ClienteDAO {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long cliente_id;
+    private UUID cliente_id;
 
     @Size(min=4, max = 20, message = "El tamaño tiene que estar entre 4 y 12")
     @Column(name  = "nombre", nullable = false, length = 20, columnDefinition = "VARCHAR(20)")

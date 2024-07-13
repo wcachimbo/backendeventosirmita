@@ -8,8 +8,8 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Repository("clineteRepo")
 public interface ClienteRepo extends CrudRepository<ClienteDAO, Long> {
@@ -21,10 +21,11 @@ public interface ClienteRepo extends CrudRepository<ClienteDAO, Long> {
     @Modifying
     @Transactional
     @Query(value = """
-    INSERT INTO cliente (celular, direccion, nombre)
-    VALUES (:celularC, :direccionC, :nombreC)
+    INSERT INTO cliente (cliente_id, celular, direccion, nombre)
+    VALUES (:cliente_id,:celularC, :direccionC, :nombreC)
     """, nativeQuery = true)
-    int insertPedido(
+    int insertClienteo(
+            @Param("cliente_id") UUID cliente_id,
             @Param("celularC") String celularC,
             @Param("direccionC") String direccionC,
             @Param("nombreC") String nombreC);
