@@ -36,6 +36,9 @@ public class PedidoServiceImpl implements PedidoService {
     @Autowired
     ClienteRepo clienteRepo;
 
+    @Autowired
+    WhatsAppServiceImpl whatsAppService;
+
     private final UUID key= UUID.randomUUID();
 
 
@@ -64,6 +67,7 @@ public class PedidoServiceImpl implements PedidoService {
                     clienteRepo.insertClienteo(key, pedido.getCelularCliente(),pedido.getDireccionCliente(),pedido.getNombreCliente());
 
                 }
+                whatsAppService.sendWhatsAppMessage(pedido.getCelularCliente(), pedido.getDescripcion());
                 return true;
             }
 
