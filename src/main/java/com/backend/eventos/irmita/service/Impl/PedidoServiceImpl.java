@@ -41,18 +41,13 @@ public class PedidoServiceImpl implements PedidoService {
     ClienteRepo clienteRepo;
 
 
-    @Autowired
-    WhatsAppServiceImpl whatsAppService;
-
-    private final UUID key = UUID.randomUUID();
-
 
     @Override
     @Transactional
     public boolean creaPedido(PedidoDAO pedido) {
 
         LocalDate localDate = LocalDate.parse(pedido.getFecha(), formatter);
-        //validatePedido(localDate, pedido.getProductop());
+        validatePedido(localDate, pedido.getProductop());
 
         UUID key = UUID.randomUUID();
         String idfactura = "FAC-" + key;
@@ -76,7 +71,6 @@ public class PedidoServiceImpl implements PedidoService {
             clienteRepo.insertClienteo(key, pedido.getCelularCliente(), pedido.getDireccionCliente(), pedido.getNombreCliente());
 
         }
-        //whatsAppService.sendWhatsAppMessage(pedido.getCelularCliente(), pedido.getDescripcion());
         return true;
     }
 
@@ -100,11 +94,8 @@ public class PedidoServiceImpl implements PedidoService {
 
         } catch (Exception e) {
             log.error("Erro validando el metodo: validatePedido ", e.getMessage());
-            response.put("Error en el metodo: validatePedido", e.getMessage());
-            //throw new StockException("Error en el metodo: validatePedido".concat(e.getMessage()));
-            //return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new BadRequestException(HttpStatus.INTERNAL_SERVER_ERROR,"Error en el metodo: validatePedido".concat(e.getMessage()));
         }
 
-        //return null;
     }
 }
