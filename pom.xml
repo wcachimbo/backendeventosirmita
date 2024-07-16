@@ -10,8 +10,8 @@
 	</parent>
 	<groupId>com.eventos.irmita</groupId>
 	<artifactId>backend.eventos.irmita</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>backend.eventos.irmita</name>
+	<version>0.0.1</version>
+	<name>eventoIrmita</name>
 	<description>Bancked del proyecto eventos Irmita</description>
 	<url/>
 	<licenses>
@@ -81,6 +81,13 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.33</version> <!-- O la versión más reciente -->
+		</dependency>
+
 
 		<dependency>
 			<groupId>com.twilio.sdk</groupId>

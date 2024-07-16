@@ -24,4 +24,13 @@ public interface StockRepo extends CrudRepository<StockDAO, Long> {
             @Param("cantidad") int cantidad,
             @Param("nombrep") String nombrep);
 
+    @Modifying
+    @Transactional
+    @Query(value = """
+        INSERT INTO stock(fecha,nombrepd,cantidadpd) SET cantidadpd = IFNULL(cantidadpd, 0) - :cantidad WHERE nombrepd = :nombrep
+        """, nativeQuery = true)
+    Integer insertStock(
+            @Param("cantidad") int cantidad,
+            @Param("nombrep") String nombrep);
+
 }

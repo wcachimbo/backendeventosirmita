@@ -1,6 +1,8 @@
 package com.backend.eventos.irmita.service.Impl;
 
 import com.backend.eventos.irmita.commons.ENUM.Estado;
+import com.backend.eventos.irmita.commons.ENUM.NombreProducto;
+import com.backend.eventos.irmita.commons.StockException;
 import com.backend.eventos.irmita.models.PedidoDAO;
 import com.backend.eventos.irmita.models.ProductoDAO;
 import com.backend.eventos.irmita.repository.ClienteRepo;
@@ -24,6 +26,7 @@ import java.util.*;
 @Slf4j
 public class PedidoServiceImpl implements PedidoService {
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    final Map<String,Object> response = new HashMap<>();
     @Autowired
     PedidoRepo pedidoRepo;
 
@@ -36,6 +39,7 @@ public class PedidoServiceImpl implements PedidoService {
     @Autowired
     ClienteRepo clienteRepo;
 
+
     @Autowired
     WhatsAppServiceImpl whatsAppService;
 
@@ -47,20 +51,24 @@ public class PedidoServiceImpl implements PedidoService {
     public boolean creaPedido(PedidoDAO pedido) {
 
             LocalDate localDate = LocalDate.parse(pedido.getFecha(), formatter);
-            String idfactura = "FAC-" + key;
+            validatePedido(localDate, pedido.getProductop());
 
-            if (validatePedido(localDate, pedido.getProductop())) {
+                UUID key= UUID.randomUUID();
+                String idfactura = "FAC-" + key;
                 final String status = Estado.CREADO.getStatus();
+                if (clienteRepo.getClientes(pedido.getCelularCliente()).isEmpty()){
+                    clienteRepo.insertClienteo(key, pedido.getCelularCliente(),pedido.getDireccionCliente(),pedido.getNombreCliente());
+                }
                 final int result = pedidoRepo.insertPedido(key,pedido.getCelularCliente(),
                         pedido.getDescripcion(), pedido.getDireccionCliente(), status, idfactura,
                         localDate, pedido.getNombreCliente(), pedido.getTotal());
                 if (result > 0) {
                     for (ProductoDAO product : pedido.getProductop()) {
-                        productoRepo.insertProducto(key,product.getCantidadprodcuto(), idfactura,
+                        productoRepo.insertProducto(UUID.randomUUID(),product.getCantidadprodcuto(), idfactura,
                                 product.getNombreProducto(), product.getPrecio(), key, localDate,
                                 Double.valueOf(product.getCantidadprodcuto()* product.getPrecio())
                         );
-                        stockRepo.updateStock(product.getCantidadprodcuto(), product.getNombreProducto());
+                        //stockRepo.updateStock(product.getCantidadprodcuto(), product.getNombreProducto());
                     }
 
                 }if (clienteRepo.getClientes(pedido.getCelularCliente()).isEmpty()){
@@ -74,27 +82,33 @@ public class PedidoServiceImpl implements PedidoService {
         return false;
     }
 
-    private boolean validatePedido(LocalDate fecha, Set<ProductoDAO> producto) {
+    private ResponseEntity<?> validatePedido(LocalDate fecha, Set<ProductoDAO> producto) {
         try {
-            Map<String,Object> response = new HashMap<>();
+
             List<PedidoDAO> listpedido = pedidoRepo.pedidoActivo("001", fecha);
             if (!listpedido.isEmpty()) {
                 for (ProductoDAO product : producto) {
-                    final int sumInventaro = stockRepo.stockProduct(product.getNombreProducto());
+                    final int sumInventaro = NombreProducto.getStockByNombre(product.getNombreProducto());
                     final int sumProduct = productoRepo.disponibilidadProducto(product.getNombreProducto(), fecha);
-                    if (sumProduct > sumInventaro) {
-                        response.put(product.getNombreProducto()+" Solo hay disponible", sumInventaro);
-                         new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
-                        return false;
+                    final int sumPedido = product.getCantidadprodcuto();
+                    if ((sumProduct + sumPedido) > sumInventaro) {
+                        //response.put(product.getNombreProducto() + " Solo hay disponible", sumInventaro - sumProduct);
+                        //return throw new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+                        log.warn("No hay suficiente producto disponible de sillas ".concat(product.getNombreProducto()));
+                        String errorMessage = product.getNombreProducto().concat(" Solo hay disponible: ").concat(String.valueOf(sumInventaro - sumProduct));
+                        throw new StockException(errorMessage);
+                        //return  new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
                     }
                 }
             }
 
         } catch (Exception e) {
-            log.info("Erro validando el metodo: validatePedido ", e.getMessage());
-            return false;
+            log.error("Erro validando el metodo: validatePedido ", e.getMessage());
+            response.put("Error en el metodo: validatePedido",e.getMessage());
+            //throw new StockException("Error en el metodo: validatePedido".concat(e.getMessage()));
+            return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return true;
+        return null;
     }
 }
