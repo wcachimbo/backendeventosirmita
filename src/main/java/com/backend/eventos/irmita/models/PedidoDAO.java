@@ -59,5 +59,12 @@ public class PedidoDAO {
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<ProductoDAO> productop;
 
-
+    @Override
+    public String toString() {
+        return "EventosIrmita le informa que su pedido quedo ajendado" + '\'' +
+                "Dia de entrega del pedido: " + fecha + '\'' +
+                ", Usted realizó la separacion de ='" + productop + '\'' +
+                ", Tolta a pagar de su pedido ='" + total + '\'' +
+                '}';
+    }
 }
