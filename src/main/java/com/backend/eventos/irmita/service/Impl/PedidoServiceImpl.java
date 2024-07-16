@@ -51,7 +51,7 @@ public class PedidoServiceImpl implements PedidoService {
     public boolean creaPedido(PedidoDAO pedido) {
 
             LocalDate localDate = LocalDate.parse(pedido.getFecha(), formatter);
-            validatePedido(localDate, pedido.getProductop());
+            //validatePedido(localDate, pedido.getProductop());
 
                 UUID key= UUID.randomUUID();
                 String idfactura = "FAC-" + key;
@@ -79,11 +79,10 @@ public class PedidoServiceImpl implements PedidoService {
                 return true;
             }
 
-        return false;
     }
 
-    private ResponseEntity<?> validatePedido(LocalDate fecha, Set<ProductoDAO> producto) {
-        try {
+    /* private void validatePedido(LocalDate fecha, Set<ProductoDAO> producto) {
+       try {
 
             List<PedidoDAO> listpedido = pedidoRepo.pedidoActivo("001", fecha);
             if (!listpedido.isEmpty()) {
@@ -110,5 +109,5 @@ public class PedidoServiceImpl implements PedidoService {
         }
 
         return null;
-    }
-}
+    }*/
+
