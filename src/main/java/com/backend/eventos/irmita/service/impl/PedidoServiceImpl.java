@@ -1,9 +1,8 @@
-package com.backend.eventos.irmita.service.Impl;
+package com.backend.eventos.irmita.service.impl;
 
 import com.backend.eventos.irmita.commons.BadRequestException;
-import com.backend.eventos.irmita.commons.ENUM.Estado;
-import com.backend.eventos.irmita.commons.ENUM.NombreProducto;
-import com.backend.eventos.irmita.commons.StockException;
+import com.backend.eventos.irmita.commons.enu.Estado;
+import com.backend.eventos.irmita.commons.enu.NombreProducto;
 import com.backend.eventos.irmita.models.PedidoDAO;
 import com.backend.eventos.irmita.models.ProductoDAO;
 import com.backend.eventos.irmita.repository.ClienteRepo;
@@ -14,11 +13,9 @@ import com.backend.eventos.irmita.service.PedidoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -41,7 +38,6 @@ public class PedidoServiceImpl implements PedidoService {
     ClienteRepo clienteRepo;
 
 
-
     @Override
     @Transactional
     public boolean creaPedido(PedidoDAO pedido) {
@@ -55,15 +51,10 @@ public class PedidoServiceImpl implements PedidoService {
         if (clienteRepo.getClientes(pedido.getCelularCliente()).isEmpty()) {
             clienteRepo.insertClienteo(key, pedido.getCelularCliente(), pedido.getDireccionCliente(), pedido.getNombreCliente());
         }
-        final int result = pedidoRepo.insertPedido(key, pedido.getCelularCliente(),
-                pedido.getDescripcion(), pedido.getDireccionCliente(), status, idfactura,
-                localDate, pedido.getNombreCliente(), pedido.getTotal());
+        final int result = pedidoRepo.insertPedido(key, pedido.getCelularCliente(), pedido.getDescripcion(), pedido.getDireccionCliente(), status, idfactura, localDate, pedido.getNombreCliente(), pedido.getTotal());
         if (result > 0) {
             for (ProductoDAO product : pedido.getProductop()) {
-                productoRepo.insertProducto(UUID.randomUUID(), product.getCantidadprodcuto(), idfactura,
-                        product.getNombreProducto(), product.getPrecio(), key, localDate,
-                        Double.valueOf(product.getCantidadprodcuto() * product.getPrecio())
-                );
+                productoRepo.insertProducto(UUID.randomUUID(), product.getCantidadprodcuto(), idfactura, product.getNombreProducto(), product.getPrecio(), key, localDate, Double.valueOf(product.getCantidadprodcuto() * product.getPrecio()));
             }
 
         }
@@ -73,7 +64,6 @@ public class PedidoServiceImpl implements PedidoService {
         }
         return true;
     }
-
 
     private void validatePedido(LocalDate fecha, Set<ProductoDAO> producto) {
         try {
@@ -94,7 +84,7 @@ public class PedidoServiceImpl implements PedidoService {
 
         } catch (Exception e) {
             log.error("Erro validando el metodo: validatePedido ", e.getMessage());
-            throw new BadRequestException(HttpStatus.INTERNAL_SERVER_ERROR,"Error en el metodo: validatePedido".concat(e.getMessage()));
+            throw new BadRequestException(HttpStatus.INTERNAL_SERVER_ERROR, "Error en el metodo: validatePedido".concat(e.getMessage()));
         }
 
     }

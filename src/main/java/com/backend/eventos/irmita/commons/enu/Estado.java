@@ -1,4 +1,4 @@
-package com.backend.eventos.irmita.commons.ENUM;
+package com.backend.eventos.irmita.commons.enu;
 
 public enum Estado {
     CREADO("001"),

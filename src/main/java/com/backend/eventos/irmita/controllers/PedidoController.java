@@ -3,7 +3,7 @@ package com.backend.eventos.irmita.controllers;
 
 import com.backend.eventos.irmita.commons.BadRequestException;
 import com.backend.eventos.irmita.models.PedidoDAO;
-import com.backend.eventos.irmita.service.Impl.WhatsAppServiceImpl;
+import com.backend.eventos.irmita.service.impl.WhatsAppServiceImpl;
 import com.backend.eventos.irmita.service.PedidoService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
