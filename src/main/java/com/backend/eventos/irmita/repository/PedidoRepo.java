@@ -26,14 +26,15 @@ public interface PedidoRepo extends CrudRepository<PedidoDAO, Long> {
     @Modifying
     @Transactional
     @Query(value = """
-        INSERT INTO pedido (pedido_id, celularcliente, descripcion, direccioncliente, estadop, factura, fecha, nombrecliente, total)
-        VALUES (:pedido_id, :celular, :descripcion, :direccion, :status, :factura, :fecha, :nombre, :total)
+        INSERT INTO pedido (pedido_id, celularcliente, descripcion, direccioncliente, barrio, estadop, factura, fecha, nombrecliente, total)
+        VALUES (:pedido_id, :celular, :descripcion, :direccion, :barrio, :status, :factura, :fecha, :nombre, :total)
     """, nativeQuery = true)
     int insertPedido(
             @Param("pedido_id") UUID pedido_id,
             @Param("celular") String celular,
             @Param("descripcion") String descripcion,
             @Param("direccion") String direccion,
+            @Param("barrio" ) String barrio,
             @Param("status") String status,
             @Param("factura") String factura,
             @Param("fecha") LocalDate fecha,

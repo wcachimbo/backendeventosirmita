@@ -53,6 +53,10 @@ public class PedidoDAO {
     @Column(name  = "descripcion", nullable = true, length = 200, columnDefinition = "VARCHAR(200)")
     private String descripcion;
 
+    @Column(name  = "barrio", nullable = false, length = 60, columnDefinition = "VARCHAR(60)")
+    @NotEmpty(message = "El barrio   no puede ser vacio")
+    private String barrio;
+
     @Column(name  = "estadop", nullable = false, length = 3, columnDefinition = "VARCHAR(3)")
     private String estadoP;
 

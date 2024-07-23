@@ -51,7 +51,8 @@ public class PedidoServiceImpl implements PedidoService {
         if (clienteRepo.getClientes(pedido.getCelularCliente()).isEmpty()) {
             clienteRepo.insertClienteo(key, pedido.getCelularCliente(), pedido.getDireccionCliente(), pedido.getNombreCliente());
         }
-        final int result = pedidoRepo.insertPedido(key, pedido.getCelularCliente(), pedido.getDescripcion(), pedido.getDireccionCliente(), status, idfactura, localDate, pedido.getNombreCliente(), pedido.getTotal());
+        final int result = pedidoRepo.insertPedido(key, pedido.getCelularCliente(), pedido.getDescripcion(), pedido.getDireccionCliente(),
+                pedido.getBarrio(), status, idfactura, localDate, pedido.getNombreCliente(), pedido.getTotal());
         if (result > 0) {
             for (ProductoDAO product : pedido.getProductop()) {
                 productoRepo.insertProducto(UUID.randomUUID(), product.getCantidadprodcuto(), idfactura, product.getNombreProducto(), product.getPrecio(), key, localDate, Double.valueOf(product.getCantidadprodcuto() * product.getPrecio()));
